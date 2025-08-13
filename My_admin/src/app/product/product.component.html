@@ -1,0 +1,422 @@
+<div class="product-container">
+  <h1>Quản lý sản phẩm</h1>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <strong>
+      <span>Tất cả ({{ totalItems }}) | </span>
+      <span>Còn hàng ({{ getProductCountByStatus("Còn hàng", true) }}) | </span>
+      <span>Hết hàng ({{ getProductCountByStatus("Hết hàng", true) }}) | </span>
+      <span
+        >Ngừng kinh doanh ({{
+          getProductCountByStatus("Ngừng kinh doanh", true)
+        }})</span
+      >
+    </strong>
+  </div>
+
+  <!-- Hiển thị lỗi -->
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Đang tải dữ liệu...</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-section" *ngIf="!isLoading">
+    <div class="filter-row">
+      <div class="batch-actions">
+        <!-- Custom dropdown for batch actions -->
+        <div
+          class="custom-dropdown"
+          [class.active]="openDropdown === 'actions'"
+        >
+          <div
+            class="selected-option"
+            (click)="toggleDropdown('actions', $event)"
+          >
+            {{
+              selectedAction
+                ? getActionName(selectedAction)
+                : "Hành động hàng loạt"
+            }}
+            <img src="../../assets/product/arrow-down.svg" alt="dropdown" />
+          </div>
+          <div
+            class="dropdown-menu"
+            *ngIf="openDropdown === 'actions'"
+            (click)="$event.stopPropagation()"
+          >
+            <div
+              class="dropdown-item"
+              (click)="selectAction(''); closeDropdown()"
+            >
+              Hành động hàng loạt
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectAction('hide'); closeDropdown()"
+            >
+              Ẩn sản phẩm
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectAction('unhide'); closeDropdown()"
+            >
+              Bỏ ẩn sản phẩm
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectAction('delete'); closeDropdown()"
+            >
+              Xóa sản phẩm
+            </div>
+          </div>
+        </div>
+        <button
+          class="button-cam apply-button"
+          [disabled]="!hasSelectedProducts || !selectedAction"
+          (click)="applyBatchAction()"
+        >
+          Áp dụng
+        </button>
+      </div>
+
+      <div class="filter-dropdowns">
+        <!-- Custom dropdown for categories -->
+        <div
+          class="custom-dropdown"
+          [class.active]="openDropdown === 'category'"
+        >
+          <div
+            class="selected-option"
+            (click)="toggleDropdown('category', $event)"
+          >
+            {{ filterCategory || "Tất cả danh mục" }}
+            <img src="../../assets/product/arrow-down.svg" alt="dropdown" />
+          </div>
+          <div
+            class="dropdown-menu"
+            *ngIf="openDropdown === 'category'"
+            (click)="$event.stopPropagation()"
+          >
+            <div
+              class="dropdown-item"
+              (click)="selectCategory(''); closeDropdown()"
+            >
+              Tất cả danh mục
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectCategory('Xào'); closeDropdown()"
+            >
+              Xào
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectCategory('Nước'); closeDropdown()"
+            >
+              Nước
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectCategory('Món mặn'); closeDropdown()"
+            >
+              Món mặn
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectCategory('Trộn'); closeDropdown()"
+            >
+              Trộn
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom dropdown for status -->
+        <div class="custom-dropdown" [class.active]="openDropdown === 'status'">
+          <div
+            class="selected-option"
+            (click)="toggleDropdown('status', $event)"
+          >
+            {{ filterStatus || "Tất cả trạng thái" }}
+            <img src="../../assets/product/arrow-down.svg" alt="dropdown" />
+          </div>
+          <div
+            class="dropdown-menu"
+            *ngIf="openDropdown === 'status'"
+            (click)="$event.stopPropagation()"
+          >
+            <div
+              class="dropdown-item"
+              (click)="selectStatus(''); closeDropdown()"
+            >
+              Tất cả trạng thái
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectStatus('Còn hàng'); closeDropdown()"
+            >
+              Còn hàng
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectStatus('Hết hàng'); closeDropdown()"
+            >
+              Hết hàng
+            </div>
+            <div
+              class="dropdown-item"
+              (click)="selectStatus('Ngừng kinh doanh'); closeDropdown()"
+            >
+              Ngừng kinh doanh
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="button-cam" routerLink="/san-pham/them-moi">
+        Thêm sản phẩm
+      </button>
+    </div>
+  </div>
+
+  <!-- Product Table -->
+  <table class="product-table" *ngIf="!isLoading && products.length > 0">
+    <thead>
+      <tr>
+        <th>
+          <input
+            type="checkbox"
+            [checked]="allProductsSelected"
+            (change)="toggleAllProducts()"
+          />
+        </th>
+        <th class="sortable" (click)="sort('name', $event)">
+          Tên sản phẩm
+          <img
+            src="../../assets/product/sort.svg"
+            alt="sort"
+            class="sort-icon"
+            [class.active]="sortColumn === 'ingredientName'"
+            [class.desc]="
+              sortColumn === 'ingredientName' && sortDirection === 'desc'
+            "
+          />
+        </th>
+        <th class="sortable" (click)="sort('code', $event)">
+          Mã sản phẩm
+          <img
+            src="../../assets/product/sort.svg"
+            alt="sort"
+            class="sort-icon"
+            [class.active]="sortColumn === '_id'"
+            [class.desc]="sortColumn === '_id' && sortDirection === 'desc'"
+          />
+        </th>
+        <th>Trạng thái</th>
+        <th class="sortable" (click)="sort('price')">
+          <div class="quantity-header">
+            <div class="quantity-title">Giá</div>
+            <div class="quantity-columns">
+              <div class="quantity-col" (click)="sort('price2', $event)">
+                <span>2p</span>
+                <img
+                  src="../../assets/product/sort.svg"
+                  alt="sort"
+                  class="sort-icon"
+                  [class.active]="sortColumn === 'price2'"
+                  [class.desc]="
+                    sortColumn === 'price2' && sortDirection === 'desc'
+                  "
+                />
+              </div>
+              <div class="quantity-col" (click)="sort('price4', $event)">
+                <span>4p</span>
+                <img
+                  src="../../assets/product/sort.svg"
+                  alt="sort"
+                  class="sort-icon"
+                  [class.active]="sortColumn === 'price4'"
+                  [class.desc]="
+                    sortColumn === 'price4' && sortDirection === 'desc'
+                  "
+                />
+              </div>
+            </div>
+          </div>
+        </th>
+        <th>Danh mục</th>
+        <th>
+          <div class="quantity-header">
+            <div class="quantity-title">Số lượng</div>
+            <div class="quantity-columns">
+              <div class="quantity-col" (click)="sort('quantity2', $event)">
+                <span>2p</span>
+                <img
+                  src="../../assets/product/sort.svg"
+                  alt="sort"
+                  class="sort-icon"
+                  [class.active]="sortColumn === 'quantity2'"
+                  [class.desc]="
+                    sortColumn === 'quantity2' && sortDirection === 'desc'
+                  "
+                />
+              </div>
+              <div class="quantity-col" (click)="sort('quantity4', $event)">
+                <span>4p</span>
+                <img
+                  src="../../assets/product/sort.svg"
+                  alt="sort"
+                  class="sort-icon"
+                  [class.active]="sortColumn === 'quantity4'"
+                  [class.desc]="
+                    sortColumn === 'quantity4' && sortDirection === 'desc'
+                  "
+                />
+              </div>
+            </div>
+          </div>
+        </th>
+        <th class="sortable" (click)="sort('date', $event)">
+          Ngày hết hạn
+          <img
+            src="../../assets/product/sort.svg"
+            alt="sort"
+            class="sort-icon"
+            [class.active]="sortColumn === 'timestamp'"
+            [class.desc]="
+              sortColumn === 'timestamp' && sortDirection === 'desc'
+            "
+          />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let product of products
+            | slice
+              : (currentPage - 1) * itemsPerPage
+              : currentPage * itemsPerPage
+        "
+      >
+        <td>
+          <input
+            type="checkbox"
+            [checked]="product.code && isProductSelected(product.code)"
+            (change)="product.code && toggleProductSelection(product.code)"
+          />
+        </td>
+        <td>
+          <div
+            class="product-name"
+            (mouseenter)="showActionsMenu(product)"
+            (mouseleave)="hideActionsMenuWithDelay(product)"
+          >
+            {{ product.name }}
+            <div
+              class="product-actions"
+              [id]="'actions-' + product.code"
+              (mouseenter)="cancelHideMenu()"
+              (mouseleave)="hideActionsMenu()"
+            >
+              <a href="javascript:void(0)" (click)="editProduct(product)"
+                >Chỉnh sửa</a
+              >
+              <span class="separator">|</span>
+              <a href="javascript:void(0)" (click)="duplicateProduct(product)"
+                >Nhân đôi</a
+              >
+              <span class="separator">|</span>
+              <a
+                href="javascript:void(0)"
+                (click)="
+                  product.status === 'Ngừng kinh doanh'
+                    ? unhideProduct(product)
+                    : hideProduct(product)
+                "
+              >
+                {{ product.status === "Ngừng kinh doanh" ? "Bỏ ẩn" : "Ẩn" }}
+              </a>
+              <span class="separator">|</span>
+              <a
+                href="javascript:void(0)"
+                (click)="deleteProduct(product)"
+                class="delete-action"
+                >Xóa</a
+              >
+            </div>
+          </div>
+        </td>
+        <td>{{ product.code }}</td>
+        <td>
+          <span
+            class="product-status"
+            [ngClass]="{
+              'status-instock': product.status === 'Còn hàng',
+              'status-outofstock': product.status === 'Hết hàng',
+              'status-discontinued': product.status === 'Ngừng kinh doanh'
+            }"
+            >{{ product.status }}</span
+          >
+        </td>
+        <td class="product-price">
+          <div class="quantity-info">
+            <span
+              >{{ (product.pricePerPortion?.['2'] || 0) | number:'1.0-0' }}</span
+            >
+            <span
+              >{{ (product.pricePerPortion?.['4'] || 0) | number:'1.0-0' }}</span
+            >
+          </div>
+        </td>
+        <td>{{ product.category }}</td>
+        <td>
+          <div class="quantity-info">
+            <span>{{ product['portionQuantities']?.['2'] || 0 }}</span>
+            <span>{{ product['portionQuantities']?.['4'] || 0 }}</span>
+          </div>
+        </td>
+        <td>{{ product.date }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Không có dữ liệu -->
+  <div class="no-data" *ngIf="!isLoading && products.length === 0">
+    <p>Không có sản phẩm nào phù hợp với tiêu chí tìm kiếm.</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="!isLoading && filteredCount > 0">
+    <button
+      [disabled]="currentPage === 1"
+      (click)="currentPage = currentPage - 1"
+      class="page-button"
+    >
+      <img src="../../assets/sidebar/arrow.svg" alt="" class="back" />
+    </button>
+
+    <div
+      *ngFor="let page of getPageArray()"
+      class="page-button"
+      [class.active]="currentPage === page"
+      (click)="currentPage = page"
+    >
+      {{ page }}
+    </div>
+
+    <button
+      [disabled]="currentPage === getTotalPages()"
+      (click)="currentPage = currentPage + 1"
+      class="page-button"
+    >
+      <img src="../../assets/sidebar/arrow.svg" alt="" />
+    </button>
+  </div>
+</div>

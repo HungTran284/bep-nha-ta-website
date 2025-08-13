@@ -1,0 +1,516 @@
+<!-- Breadcrumb -->
+<app-breadcrumb
+  category="Sản phẩm"
+  categoryLink="/san-pham"
+  [currentPage]="product?.ingredientName || 'Chi tiết sản phẩm'"
+></app-breadcrumb>
+
+<!-- Thông báo -->
+<div
+  *ngIf="notification.show"
+  class="notification"
+  [ngClass]="{
+    'notification-success': notification.type === 'success',
+    'notification-error': notification.type === 'error'
+  }"
+>
+  <div class="notification-content">
+    <div *ngIf="notification.type === 'success'" class="notification-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <div *ngIf="notification.type === 'error'" class="notification-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12" y2="16"></line>
+      </svg>
+    </div>
+    <span>{{ notification.message }}</span>
+  </div>
+</div>
+
+<!-- Loading indicator -->
+<div class="loading" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Đang tải thông tin sản phẩm...</p>
+</div>
+
+<!-- Error message -->
+<div class="error-message" *ngIf="error && !loading">
+  <p>{{ error }}</p>
+  <button class="button-cam" routerLink="/san-pham">
+    Quay lại trang sản phẩm
+  </button>
+</div>
+
+<!-- Product detail content -->
+<div class="product-detail-container" *ngIf="product && !loading && !error">
+  <!-- Left column -->
+  <div class="product-main">
+    <div class="product-gallery m-auto">
+      <div class="main-image">
+        <img [src]="product.mainImage" [alt]="product.ingredientName" />
+      </div>
+    </div>
+
+    <div class="product-description">
+      <p class="description-text">{{ product.description }}</p>
+
+      <div class="note-section">
+        <h3>Lưu ý</h3>
+        <p>
+          Gói nguyên liệu <b>{{ product.ingredientName }}</b> dùng để nấu cho
+          khẩu phần
+          <b>{{ selectedServing }} người</b>
+        </p>
+      </div>
+
+      <div class="product-details">
+        <div class="d-flex align-items-center mb-2">
+          <img src="../../assets/chi-tiet-san-pham/nguyen-lieu.svg" alt="" />
+          <span><h3 class="m-0">THÔNG TIN SẢN PHẨM</h3></span>
+        </div>
+        <div class="details-grid">
+          <div class="detail-item">
+            <h4>Thành phần nguyên liệu</h4>
+            <div *ngIf="!product?.components">Không có dữ liệu components</div>
+            <div *ngIf="product?.components && product.components.length === 0">
+              Danh sách components rỗng
+            </div>
+            <ol
+              class="components-list"
+              *ngIf="product?.components && product.components.length > 0"
+            >
+              <li *ngFor="let component of product.components">
+                {{ component }}
+              </li>
+            </ol>
+          </div>
+          <div class="detail-item">
+            <h4>Bảo quản</h4>
+            <p>{{ product.storage }}</p>
+          </div>
+          <div class="detail-item">
+            <h4>Hạn sử dụng</h4>
+            <p>{{ product.notes }}</p>
+          </div>
+          <!-- <div class="detail-item">
+            <h4>Độ khó</h4>
+            <p>{{ product.level }}</p>
+          </div>
+          <div class="detail-item">
+            <h4>Thời gian chế biến</h4>
+            <p>{{ product.time }}</p>
+          </div> -->
+        </div>
+      </div>
+
+      <div class="tags">
+        <h3>TAGS</h3>
+        <div class="tag-list">
+          <span class="tag" *ngFor="let tag of product.tags">{{ tag }}</span>
+        </div>
+      </div>
+
+      <div class="faq">
+        <h3>CÂU HỎI THƯỜNG GẶP</h3>
+        <div class="faq-item" *ngFor="let faq of faqs">
+          <div class="faq-question" (click)="toggleFaq(faq)">
+            {{ faq.question }}
+            <img
+              [src]="
+                faq.isOpen
+                  ? '../../assets/faq/icon-down.svg'
+                  : '../../assets/faq/icon-right.svg'
+              "
+              [alt]="faq.isOpen ? 'Mũi tên xuống' : 'Mũi tên phải'"
+              class="faq-icon"
+            />
+          </div>
+          <div class="faq-answer" *ngIf="faq.isOpen">
+            {{ faq.answer }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column - Sticky sidebar -->
+  <div class="product-sidebar">
+    <div class="sidebar-content">
+      <h5 class="product-title">{{ product.ingredientName }}</h5>
+
+      <div class="rating" *ngIf="product.rating">
+        <span class="stars">
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+        </span>
+        <span class="rating-score">{{ product.rating.rate }}</span>
+        <span>|</span>
+        <span class="review-count">{{ product.rating.count }} đánh giá</span>
+      </div>
+
+      <div class="price-section">
+        <div class="price">
+          <span class="original-price" *ngIf="hasDiscount()"
+            >{{ getOriginalPrice() | number : "1.0-0" }}đ</span
+          >
+          <span class="discounted-price"
+            >{{ getDiscountedPrice() | number : "1.0-0" }}đ</span
+          >
+          <span class="discount-tag" *ngIf="hasDiscount()"
+            >-{{ product.discount }}%</span
+          >
+        </div>
+        <div class="price-note" *ngIf="hasDiscount()">
+          <div>
+            Sản phẩm đang được giảm giá
+            <span class="fw-bold text-danger"> {{ product.discount }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="serving-options">
+        <span
+          class="option"
+          [class.active]="selectedServing === '2'"
+          (click)="selectServing('2')"
+          >2 Người</span
+        >
+        <span
+          class="option"
+          [class.active]="selectedServing === '4'"
+          (click)="selectServing('4')"
+          >4 Người</span
+        >
+      </div>
+
+      <!-- Hiển thị số lượng hàng hiện có -->
+      <div class="stock-info" *ngIf="product">
+        <span class="stock-label">Còn lại: </span>
+        <span
+          class="stock-quantity"
+          [class.low-stock]="currentPortionQuantity < 10"
+        >
+          {{ currentPortionQuantity }} sản phẩm
+        </span>
+      </div>
+
+      <div class="quantity-section">
+        <div class="d-flex align-items-center gap-2">
+          <div>Số lượng:</div>
+          <div class="quantity-control">
+            <button (click)="decreaseQuantity()">-</button>
+            <input type="number" [(ngModel)]="quantity" min="1" />
+            <button (click)="increaseQuantity()">+</button>
+          </div>
+        </div>
+        <div class="twobutton">
+          <button class="add-to-wishlist button-trang" (click)="addToCart()">
+            Thêm vào giỏ hàng
+          </button>
+          <button
+            class="button-xam"
+            [class.saved]="isSavedProduct"
+            (click)="addToWishlist()"
+          >
+            <svg
+              *ngIf="!isSavedProduct"
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="#6c757d"
+              class="bi bi-heart"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"
+              />
+            </svg>
+            <svg
+              *ngIf="isSavedProduct"
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="#dc3545"
+              class="bi bi-heart-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
+              />
+            </svg>
+            {{ isSavedProduct ? "Đã lưu" : "Lưu" }}
+          </button>
+        </div>
+      </div>
+      <div class="buttonmua">
+        <button class="button-cam" (click)="buyNow()">MUA NGAY</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sản phẩm gợi ý -->
+<div class="recipes-section">
+  <div class="suggested-recipes-container">
+    <div class="suggested-recipes">
+      <div class="section-title">
+        <h2>Sản phẩm <span>Bạn có thể thích</span></h2>
+      </div>
+
+      <div class="recipes-navigation">
+        <!-- Nút điều hướng trái -->
+        <button
+          class="nav-button nav-button-left"
+          (click)="prevProductPage()"
+          [disabled]="currentProductPage === 0"
+        >
+          <img src="../../assets/trang-chu/slider.svg" alt="Previous" />
+        </button>
+
+        <div class="products-grid">
+          <div class="product-card" *ngFor="let product of visibleProducts">
+            <div
+              class="save-button"
+              (click)="toggleSaveProduct($event, product._id)"
+            >
+              <span class="heart-icon" *ngIf="!isProductSaved(product._id)">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="#6c757d"
+                  class="bi bi-heart"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"
+                  />
+                </svg>
+              </span>
+              <svg
+                *ngIf="isProductSaved(product._id)"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="#dc3545"
+                class="bi bi-heart-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
+                />
+              </svg>
+            </div>
+            <a [routerLink]="['/chi-tiet-san-pham', product._id]">
+              <img
+                [src]="product.mainImage"
+                [alt]="product.ingredientName"
+                class="product-image"
+              />
+              <div class="product-content">
+                <h5 class="product-title">{{ product.ingredientName }}</h5>
+                <div class="product-info">
+                  <div class="info-item">
+                    <img
+                      src="../../assets/san-pham/ri-bowl-line.svg"
+                      alt="category"
+                    />
+                    <span>{{ product.category }}</span>
+                  </div>
+                  <div class="info-item">
+                    <img
+                      src="../../assets/san-pham/dokho.svg"
+                      alt="difficulty"
+                    />
+                    <span>{{ product.level }}</span>
+                  </div>
+                  <div class="info-item">
+                    <img
+                      src="../../assets/san-pham/ph-cooking-pot.svg"
+                      alt="time"
+                    />
+                    <span>{{ product.time }}</span>
+                  </div>
+                </div>
+                <div class="product-actions">
+                  <div class="price-container">
+                    <div class="price-info">
+                      <span class="old-price"
+                        >{{
+                          getRelatedProductPrice(product) | number : "1.0-0"
+                        }}đ</span
+                      >
+                      <span class="new-price"
+                        >{{
+                          getRelatedProductDiscountedPrice(product)
+                            | number : "1.0-0"
+                        }}đ</span
+                      >
+
+                      <div class="discount-tag">-{{ product.discount }}%</div>
+                    </div>
+                  </div>
+                  <button class="button-camnhat">XEM CHI TIẾT</button>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Nút điều hướng phải -->
+        <button
+          class="nav-button nav-button-right"
+          (click)="nextProductPage()"
+          [disabled]="
+            currentProductPage >= suggestedProducts.length / productsPerPage - 1
+          "
+        >
+          <img src="../../assets/trang-chu/slider.svg" alt="Next" />
+        </button>
+      </div>
+    </div>
+    <div class="view-more">
+      <button class="button-cam" routerLink="/san-pham">XEM THÊM</button>
+    </div>
+  </div>
+</div>
+
+<!-- Công thức gợi ý -->
+<div class="recipes-section">
+  <div class="suggested-recipes-container">
+    <div class="suggested-recipes">
+      <div class="section-title">
+        <h2>Công thức <span>Bạn có thể thích</span></h2>
+      </div>
+
+      <div class="recipes-navigation">
+        <!-- Nút điều hướng trái -->
+        <button
+          class="nav-button nav-button-left"
+          (click)="prevRecipePage()"
+          [disabled]="currentRecipePage === 0"
+        >
+          <img src="../../assets/trang-chu/slider.svg" alt="Previous" />
+        </button>
+
+        <div class="products-grid">
+          <div class="product-card" *ngFor="let recipe of visibleRecipes">
+            <div
+              class="save-button"
+              (click)="toggleSaveRecipe($event, recipe._id)"
+            >
+              <span class="heart-icon" *ngIf="!isRecipeSaved(recipe._id)">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="#6c757d"
+                  class="bi bi-heart"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"
+                  />
+                </svg>
+              </span>
+              <svg
+                *ngIf="isRecipeSaved(recipe._id)"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="#dc3545"
+                class="bi bi-heart-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
+                />
+              </svg>
+            </div>
+            <a [routerLink]="['/cong-thuc', recipe._id]">
+              <img
+                [src]="recipe.recipeImage"
+                [alt]="recipe.recipeName"
+                class="product-image"
+              />
+              <div class="product-content">
+                <h5 class="product-title">{{ recipe.recipeName }}</h5>
+                <div class="product-info">
+                  <div class="info-item">
+                    <img
+                      src="../../assets/san-pham/khauphan.svg"
+                      alt="category"
+                    />
+                    <span>4 Người</span>
+                  </div>
+                  <div class="info-item">
+                    <img
+                      src="../../assets/san-pham/dokho.svg"
+                      alt="difficulty"
+                    />
+                    <span>{{ recipe.difficulty }}</span>
+                  </div>
+                  <div class="info-item">
+                    <img
+                      src="../../assets/san-pham/ph-cooking-pot.svg"
+                      alt="time"
+                    />
+                    <span>{{ recipe.time }}</span>
+                  </div>
+                </div>
+                <div class="product-actionss">
+                  <button class="button-camnhat">XEM CHI TIẾT</button>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Nút điều hướng phải -->
+        <button
+          class="nav-button nav-button-right"
+          (click)="nextRecipePage()"
+          [disabled]="
+            currentRecipePage >= suggestedRecipes.length / recipesPerPage - 1
+          "
+        >
+          <img src="../../assets/trang-chu/slider.svg" alt="Next" />
+        </button>
+      </div>
+    </div>
+    <div class="view-more">
+      <button class="button-cam" routerLink="/cong-thuc">XEM THÊM</button>
+    </div>
+  </div>
+</div>

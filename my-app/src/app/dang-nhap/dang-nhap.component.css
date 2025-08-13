@@ -1,0 +1,206 @@
+.container {
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.title {
+  color: black;
+  font-size: 40px;
+  font-weight: 700;
+}
+
+p {
+  font-weight: 600 !important;
+  margin: 22px 0;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.close-button img {
+  width: 35px;
+  height: 35px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px 40px 12px 15px;
+  border-radius: 15px;
+  font-size: 16px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 2px solid transparent !important;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  background-color: white;
+  border: 2px solid var(--color-camvua) !important;
+}
+
+input[type="text"].ng-invalid.ng-touched.submitted,
+input[type="password"].ng-invalid.ng-touched.submitted,
+input[type="text"].ng-invalid.submitted,
+input[type="password"].ng-invalid.submitted {
+  border: 2px solid red !important;
+}
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-password-toggle {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  height: 0;
+  width: 0;
+  margin: 0;
+}
+
+.password-input {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.forgot-password {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.forgot-password a {
+  color: var(--color-camdam);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-password a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.button-cam {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.login-link p {
+  font-size: 14px;
+}
+
+.login-link a {
+  color: var(--color-camdam);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  font-style: italic;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: green;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 16px 0;
+  padding: 12px;
+  background-color: #d4edda;
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.success-message svg {
+  margin-right: 8px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.button-cam:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.button-cam.loading {
+  background: var(--color-camvua);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: not-allowed;
+  transition: background-color 0.3s;
+}
+
+.button-cam.loading::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+  border-top-color: var(--color-camvua);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

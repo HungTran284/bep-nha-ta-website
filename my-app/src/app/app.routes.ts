@@ -1,0 +1,46 @@
+import { Routes } from '@angular/router';
+import { AboutusComponent } from './aboutus/aboutus.component';
+import { ChinhSachComponent } from './chinh-sach/chinh-sach.component';
+import { TrangChuComponent } from './trang-chu/trang-chu.component';
+import { CongThucComponent } from './cong-thuc/cong-thuc.component';
+import { ChiTietCongThucComponent } from './chi-tiet-cong-thuc/chi-tiet-cong-thuc.component';
+import { SanPhamComponent } from './san-pham/san-pham.component';
+import { ChiTietSanPhamComponent } from './chi-tiet-san-pham/chi-tiet-san-pham.component';
+import { LenThucDonComponent } from './len-thuc-don/len-thuc-don.component';
+import { BmibmrComponent } from './bmibmr/bmibmr.component';
+import { BlogComponent } from './blog/blog.component';
+import { ChiTietBlogComponent } from './chi-tiet-blog/chi-tiet-blog.component';
+import { LienHeComponent } from './lien-he/lien-he.component';
+import { FaqComponent } from './faq/faq.component';
+import { DangKyComponent } from './dang-ky/dang-ky.component';
+import { DangNhapComponent } from './dang-nhap/dang-nhap.component';
+import { TaiKhoanComponent } from './tai-khoan/tai-khoan.component';
+import { GioHangComponent } from './gio-hang/gio-hang.component';
+import { FavoritesComponent } from './yeu-thich/favorites.component';
+import { TimKiemComponent } from './tim-kiem/tim-kiem.component';
+
+export const routes: Routes = [
+  { path: 'trang-chu', component: TrangChuComponent },
+  { path: 'cong-thuc', component: CongThucComponent },
+  { path: 'cong-thuc/:id', component: ChiTietCongThucComponent },
+  { path: 'san-pham', component: SanPhamComponent },
+  { path: 'san-pham/:id', component: ChiTietSanPhamComponent },
+  { path: 'chi-tiet-san-pham/:id', component: ChiTietSanPhamComponent },
+  { path: 'len-thuc-don', component: LenThucDonComponent },
+  { path: 'blog', component: BlogComponent },
+  { path: 'blog/:id', component: ChiTietBlogComponent },
+  { path: 'cong-cu', component: BmibmrComponent },
+  { path: 'about-us', component: AboutusComponent },
+  { path: 'chinh-sach', component: ChinhSachComponent },
+  { path: 'chinh-sach/:id', component: ChinhSachComponent },
+  { path: 'lien-he', component: LienHeComponent },
+  { path: 'faq', component: FaqComponent },
+  { path: 'dang-ky', component: DangKyComponent },
+  { path: 'dang-nhap', component: DangNhapComponent },
+  { path: 'tai-khoan', component: TaiKhoanComponent },
+  { path: '', component: TrangChuComponent },
+  { path: 'gio-hang', component: GioHangComponent },
+  { path: 'yeu-thich', component: FavoritesComponent },
+  { path: 'tim-kiem', component: TimKiemComponent },
+  // { path: '', redirectTo: '/dang-nhap', pathMatch: 'full' },
+];

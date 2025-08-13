@@ -1,0 +1,106 @@
+<div class="maincontainer">
+  <div class="banner" [routerLink]="['/san-pham']">
+    <img src="../../assets/trang-chu/banner3.jpg" alt="Banner" />
+  </div>
+  <!-- <div>
+    <h1>Hello there</h1>
+  </div> -->
+  <div class="maincontent">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3775.072683429196!2d106.77744817558413!3d10.86841214481099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175277dbf11a271%3A0x4567e34b99494e3f!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBLaW5oIHThur8gLSBMdeG6rXQsIMSQSFFHLUhDTSAoVUVMKQ!5e0!3m2!1svi!2s!4v1741080302749!5m2!1svi!2s"
+      width="600"
+      height="450"
+      style="border: 0"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+    <div class="right_content">
+      <div class="right_top">
+        <h2>Liên hệ với Bếp Nhà Ta</h2>
+        <p>669 Đỗ Mười, Phường Linh Xuân, TP. Thủ Đức, TP. Hồ Chí Minh</p>
+        <p>Số điện thoại: 0909.868.686</p>
+        <p>Email: bepnhata&#64;gmail.com</p>
+      </div>
+      <div class="right_content">
+        <h2>Trang mạng xã hội</h2>
+        <div class="social">
+          <img src="../../assets/lien-he/logos-facebook.svg" alt="" />
+          <img src="../../assets/lien-he/skill-icons-instagram.svg" alt="" />
+          <img src="../../assets/lien-he/logos-tiktok-icon.svg" alt="" />
+        </div>
+      </div>
+      <div class="thacmac">
+        <h2>Gửi thắc mắc</h2>
+
+        <div *ngIf="success" class="alert alert-success">
+          Cảm ơn bạn đã gửi phản hồi! Chúng tôi sẽ liên hệ lại với bạn sớm nhất
+          có thể.
+        </div>
+
+        <div *ngIf="error" class="alert alert-danger">
+          Có lỗi xảy ra khi gửi phản hồi. Vui lòng thử lại sau hoặc liên hệ với
+          chúng tôi qua số điện thoại.
+        </div>
+
+        <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" novalidate>
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Họ và tên"
+            [ngClass]="{ 'is-invalid': submitted && f['name'].errors }"
+          />
+          <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+            <div *ngIf="f['name'].errors['required']">Vui lòng nhập họ tên</div>
+          </div>
+
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="Email"
+            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+          />
+          <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+            <div *ngIf="f['email'].errors['required']">Vui lòng nhập email</div>
+            <div *ngIf="f['email'].errors['email']">Email không hợp lệ</div>
+          </div>
+
+          <input
+            type="tel"
+            formControlName="phone"
+            placeholder="Số điện thoại"
+            [ngClass]="{ 'is-invalid': submitted && f['phone'].errors }"
+          />
+          <div *ngIf="submitted && f['phone'].errors" class="invalid-feedback">
+            <div *ngIf="f['phone'].errors['required']">
+              Vui lòng nhập số điện thoại
+            </div>
+            <div *ngIf="f['phone'].errors['pattern']">
+              Số điện thoại không hợp lệ
+            </div>
+          </div>
+
+          <textarea
+            formControlName="message"
+            placeholder="Nội dung gửi đến chúng tôi"
+            style="height: 100px; padding-top: 10px; resize: none"
+            [ngClass]="{ 'is-invalid': submitted && f['message'].errors }"
+          ></textarea>
+          <div
+            *ngIf="submitted && f['message'].errors"
+            class="invalid-feedback"
+          >
+            <div *ngIf="f['message'].errors['required']">
+              Vui lòng nhập nội dung
+            </div>
+          </div>
+
+          <button type="submit" class="button-cam" [disabled]="loading">
+            <span *ngIf="!loading">GỬI NGAY</span>
+            <span *ngIf="loading">ĐANG GỬI...</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

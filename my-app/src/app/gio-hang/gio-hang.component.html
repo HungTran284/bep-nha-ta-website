@@ -1,0 +1,553 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="checkout-info">
+        <h2 class="section-title">Thông tin thanh toán</h2>
+
+        <!-- Button hiển thị danh sách địa chỉ, chỉ hiện khi đã đăng nhập -->
+        <div class="address-selection-container mb-3" *ngIf="isLoggedIn">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="showAddressModal()"
+          >
+            <i class="bi bi-geo-alt"></i> Sổ địa chỉ
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="fullname">Họ và tên</label>
+          <input type="text" id="fullname" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Số điện thoại</label>
+          <input type="text" id="phone" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="address">Địa chỉ</label>
+          <input type="text" id="address" class="form-control" />
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <select class="form-control" id="province">
+              <option value="HCM" selected>Hồ Chí Minh</option>
+              <option value="HN">Hà Nội</option>
+              <option value="DN">Đà Nẵng</option>
+              <option value="CTho">Cần Thơ</option>
+              <option value="HP">Hải Phòng</option>
+              <option value="Other">Tỉnh/Thành phố khác</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <select class="form-control" id="district">
+              <option disabled selected>Quận/huyện</option>
+              <option value="Q1">Quận 1</option>
+              <option value="Q2">Quận 2 (Thủ Đức)</option>
+              <option value="Q3">Quận 3</option>
+              <option value="Q4">Quận 4</option>
+              <option value="Q5">Quận 5</option>
+              <option value="Q6">Quận 6</option>
+              <option value="Q7">Quận 7</option>
+              <option value="Q8">Quận 8</option>
+              <option value="Q9">Quận 9</option>
+              <option value="Q10">Quận 10</option>
+              <option value="Q11">Quận 11</option>
+              <option value="Q12">Quận 12</option>
+              <option value="QBT">Quận Bình Tân</option>
+              <option value="QBTh">Quận Bình Thạnh</option>
+              <option value="QGV">Quận Gò Vấp</option>
+              <option value="QPN">Quận Phú Nhuận</option>
+              <option value="QTB">Quận Tân Bình</option>
+              <option value="QTP">Quận Tân Phú</option>
+              <option value="QTD">Quận Thủ Đức</option>
+              <option value="HBC">Huyện Bình Chánh</option>
+              <option value="HCG">Huyện Cần Giờ</option>
+              <option value="HCC">Huyện Củ Chi</option>
+              <option value="HHM">Huyện Hóc Môn</option>
+              <option value="HNB">Huyện Nhà Bè</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <select class="form-control" id="ward">
+              <option disabled selected>Xã/phường</option>
+              <option value="P1">Phường 1</option>
+              <option value="P2">Phường 2</option>
+              <option value="P3">Phường 3</option>
+              <option value="P4">Phường 4</option>
+              <option value="P5">Phường 5</option>
+              <option value="P6">Phường 6</option>
+              <option value="P7">Phường 7</option>
+              <option value="P8">Phường 8</option>
+              <option value="P9">Phường 9</option>
+              <option value="P10">Phường 10</option>
+              <option value="P11">Phường 11</option>
+              <option value="P12">Phường 12</option>
+              <option value="P13">Phường 13</option>
+              <option value="P14">Phường 14</option>
+              <option value="P15">Phường 15</option>
+              <option value="Ben_Nghe">Phường Bến Nghé</option>
+              <option value="Ben_Thanh">Phường Bến Thành</option>
+              <option value="Da_Kao">Phường Đa Kao</option>
+              <option value="Cau_Kho">Phường Cầu Kho</option>
+              <option value="Co_Giang">Phường Cô Giang</option>
+              <option value="Nguyen_Cu_Trinh">Phường Nguyễn Cư Trinh</option>
+              <option value="Nguyen_Thai_Binh">Phường Nguyễn Thái Bình</option>
+              <option value="Pham_Ngu_Lao">Phường Phạm Ngũ Lão</option>
+              <option value="Tan_Dinh">Phường Tân Định</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="note">Ghi chú</label>
+          <input
+            type="text"
+            id="note"
+            class="form-control"
+            placeholder="Ghi chú thêm (Ví dụ: giao giờ hành chính)"
+          />
+        </div>
+
+        <div class="form-check" *ngIf="isLoggedIn">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="saveAddress"
+            [(ngModel)]="orderFormData.saveAddress"
+            (change)="onSaveAddressChange($event)"
+          />
+          <label class="form-check-label" for="saveAddress"
+            >Lưu vào sổ địa chỉ để dùng cho lần mua hàng tiếp theo</label
+          >
+        </div>
+
+        <h2 class="section-title mt-4">Hình thức thanh toán</h2>
+
+        <div class="payment-methods">
+          <div class="payment-method">
+            <input type="radio" id="COD" name="paymentMethod" checked />
+            <label for="COD" class="payment-label">
+              <div class="payment-icon cod-icon"></div>
+              <span>COD</span>
+            </label>
+          </div>
+
+          <div class="payment-method">
+            <input type="radio" id="BANK" name="paymentMethod" />
+            <label for="BANK" class="payment-label">
+              <div class="payment-icon bank-icon"></div>
+              <span>Chuyển khoản ngân hàng</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="cart-summary-container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="section-title mb-0">Giỏ hàng</h2>
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            (click)="reloadCart()"
+          >
+            <i class="bi bi-arrow-repeat"></i> Tải lại giỏ hàng
+          </button>
+        </div>
+
+        <div class="loading-overlay" *ngIf="loading">
+          <div class="spinner"></div>
+          <p>Đang tải giỏ hàng...</p>
+        </div>
+
+        <div
+          class="empty-cart"
+          *ngIf="!loading && (!cartItems || cartItems.length === 0)"
+        >
+          <div class="empty-cart-message">
+            <i class="bi bi-cart-x-fill"></i>
+            <p>Giỏ hàng của bạn đang trống</p>
+            <button class="btn btn-primary" routerLink="/san-pham">
+              Tiếp tục mua sắm
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="cart-content"
+          *ngIf="!loading && cartItems && cartItems.length > 0"
+        >
+          <div class="cart-items-container">
+            <div class="cart-header-new">
+              <div class="header-checkbox">
+                <input
+                  type="checkbox"
+                  id="select-all"
+                  (change)="toggleSelectAll()"
+                  [checked]="isAllSelected()"
+                />
+                <label for="select-all">Tất cả sản phẩm | Xóa sản phẩm</label>
+              </div>
+              <div class="header-quantity">Số lượng</div>
+              <div class="header-price">Giá</div>
+            </div>
+
+            <div class="cart-items-list">
+              <div
+                class="cart-item-new"
+                *ngFor="let item of cartItems; let i = index"
+              >
+                <div class="item-select">
+                  <input
+                    type="checkbox"
+                    [id]="'select-item-' + i"
+                    [(ngModel)]="item.selected"
+                    (change)="onItemSelectionChange()"
+                  />
+                </div>
+
+                <div class="item-info">
+                  <img
+                    [src]="item.mainImage"
+                    [alt]="item.ingredientName"
+                    class="item-image"
+                  />
+                  <div class="item-details">
+                    <h4 class="item-name">{{ item.ingredientName }}</h4>
+                  </div>
+                </div>
+
+                <div class="item-delete">
+                  <button
+                    class="delete-btn"
+                    (click)="removeItem(item)"
+                    title="Xóa sản phẩm"
+                  >
+                    <i class="bi bi-trash">Xóa</i>
+                  </button>
+                </div>
+
+                <div class="item-quantity">
+                  <div class="quantity-control-new">
+                    <button
+                      class="quantity-btn-new minus-btn"
+                      (click)="updateQuantity(item, item.quantity - 1)"
+                      [disabled]="item.quantity <= 1"
+                    >
+                      −
+                    </button>
+                    <span class="quantity-display">{{ item.quantity }}</span>
+                    <button
+                      class="quantity-btn-new plus-btn"
+                      (click)="updateQuantity(item, item.quantity + 1)"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div class="item-price">
+                  {{ getTotalPriceByItem(item) | number : "1.0-0" }} đ
+                  <small class="unit-price"
+                    >({{ item.price | number : "1.0-0" }} đ/đơn vị)</small
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cart-summary">
+            <div class="summary-actions">
+              <button class="btn btn-outline-danger" (click)="clearCart()">
+                Xóa giỏ hàng
+              </button>
+              <button class="btn btn-outline-primary" routerLink="/san-pham">
+                Tiếp tục mua sắm
+              </button>
+            </div>
+            <div class="summary-details">
+              <div class="summary-row">
+                <span>Tổng số sản phẩm:</span>
+                <span>{{ totalQuantity }}</span>
+              </div>
+              <div class="summary-row">
+                <span>Tạm tính:</span>
+                <span>{{ totalPrice | number : "1.0-0" }}đ</span>
+              </div>
+              <div class="summary-row">
+                <span>Phí vận chuyển:</span>
+                <span>Miễn phí</span>
+              </div>
+              <div class="summary-row total">
+                <span>Tổng cộng:</span>
+                <span>{{ totalPrice | number : "1.0-0" }}đ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-footer">
+    <div class="delivery-info">
+      <span
+        ><img
+          src="../../assets/gio-hang/car.svg"
+          alt=""
+          class="payment-icon"
+        /><strong>COD</strong> thanh toán khi nhận hàng</span
+      >
+    </div>
+    <div class="voucher-info">
+      <strong>Chưa dùng Voucher</strong>
+    </div>
+    <button
+      class="button-cam"
+      [disabled]="!cartItems || cartItems.length === 0"
+      (click)="proceedToCheckout()"
+    >
+      THANH TOÁN
+    </button>
+  </div>
+</div>
+
+<!-- Fixed bottom footer for mobile -->
+<div class="mobile-checkout-bar">
+  <div class="delivery-info">
+    <div class="delivery-icon"></div>
+    <span>COD thanh toán khi nhận hàng</span>
+  </div>
+  <div class="voucher-info">
+    <span>Chưa dùng Voucher</span>
+  </div>
+  <button
+    class="button-cam"
+    [disabled]="!cartItems || cartItems.length === 0"
+    (click)="proceedToCheckout()"
+  >
+    THANH TOÁN
+  </button>
+</div>
+
+<!-- Order Confirmation Modal -->
+<div
+  class="modal fade"
+  id="orderConfirmationModal"
+  tabindex="-1"
+  aria-labelledby="orderConfirmationModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="orderConfirmationModalLabel">
+          Xác nhận đơn hàng
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="order-review-section">
+          <h6 class="section-title">Thông tin giao hàng</h6>
+          <div class="delivery-info-review">
+            <p>
+              <strong>Họ và tên:</strong> <span id="review-fullname"></span>
+            </p>
+            <p>
+              <strong>Số điện thoại:</strong> <span id="review-phone"></span>
+            </p>
+            <p><strong>Email:</strong> <span id="review-email"></span></p>
+            <p><strong>Địa chỉ:</strong> <span id="review-address"></span></p>
+            <p>
+              <strong>Tỉnh/Thành phố:</strong>
+              <span id="review-province"></span>
+            </p>
+            <p>
+              <strong>Quận/Huyện:</strong> <span id="review-district"></span>
+            </p>
+            <p><strong>Phường/Xã:</strong> <span id="review-ward"></span></p>
+          </div>
+        </div>
+
+        <div class="order-review-section">
+          <h6 class="section-title">Hình thức thanh toán</h6>
+          <div class="payment-method-review">
+            <div class="payment-option">
+              <div class="payment-icon-container">
+                <div id="review-payment-icon" class=""></div>
+              </div>
+              <div class="payment-details">
+                <p><strong id="review-payment-method"></strong></p>
+                <p
+                  id="review-payment-description"
+                  class="payment-description"
+                ></p>
+              </div>
+            </div>
+            <!-- QR Code và thông tin chuyển khoản -->
+            <div
+              id="bank-transfer-details"
+              class="bank-transfer-info"
+              style="display: none"
+            >
+              <div class="qr-container">
+                <img
+                  src="../../assets/gio-hang/qr-code.png"
+                  alt="Mã QR chuyển khoản"
+                  class="qr-code-img"
+                />
+              </div>
+              <div class="bank-info">
+                <p class="bank-info-title">Thông tin tài khoản:</p>
+                <p><strong>Chủ tài khoản:</strong> BẾP NHÀ TA</p>
+                <p><strong>Số tài khoản:</strong> 0909868686</p>
+                <p>
+                  <strong>Nội dung chuyển khoản:</strong>
+                  <span id="payment-order-code"></span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-review-section">
+          <h6 class="section-title">Sản phẩm đặt hàng</h6>
+          <div class="products-review">
+            <div class="product-item-review" *ngFor="let item of cartItems">
+              <div class="product-image">
+                <img [src]="item.mainImage" [alt]="item.ingredientName" />
+              </div>
+              <div class="product-details">
+                <h6>{{ item.ingredientName }}</h6>
+                <p>Số lượng: {{ item.quantity }}</p>
+                <p>Giá: {{ item.price | number : "1.0-0" }}đ</p>
+                <p>Tổng: {{ getTotalPriceByItem(item) | number : "1.0-0" }}đ</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-review-section">
+          <h6 class="section-title">Tổng tiền</h6>
+          <div class="total-review">
+            <div class="total-row">
+              <span>Tạm tính:</span>
+              <span>{{ totalPrice | number : "1.0-0" }}đ</span>
+            </div>
+            <div class="total-row">
+              <span>Phí vận chuyển:</span>
+              <span>Miễn phí</span>
+            </div>
+            <div class="total-row final">
+              <span>Tổng cộng:</span>
+              <span>{{ totalPrice | number : "1.0-0" }}đ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Quay lại
+        </button>
+        <button type="button" class="btn btn-primary" (click)="confirmOrder()">
+          Xác nhận đặt hàng
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Address Selection Modal -->
+<div
+  class="modal fade"
+  id="addressSelectionModal"
+  tabindex="-1"
+  aria-labelledby="addressSelectionModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addressSelectionModalLabel">
+          Chọn địa chỉ giao hàng
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="loadingAddresses" class="text-center p-3">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+          </div>
+          <p class="mt-2">Đang tải danh sách địa chỉ...</p>
+        </div>
+
+        <div
+          *ngIf="!loadingAddresses && userAddresses.length === 0"
+          class="text-center p-3"
+        >
+          <p>Bạn chưa có địa chỉ nào. Vui lòng nhập thông tin địa chỉ mới.</p>
+        </div>
+
+        <div
+          *ngIf="!loadingAddresses && userAddresses.length > 0"
+          class="address-list"
+        >
+          <div
+            *ngFor="let address of userAddresses"
+            class="address-item"
+            [class.selected]="selectedAddressId === address._id"
+            (click)="selectAddress(address)"
+          >
+            <div class="address-info">
+              <div class="recipient-name">
+                {{ address.recipientName || "Chưa có tên" }}
+              </div>
+              <div class="recipient-phone">
+                {{ address.recipientPhone || "Chưa có SĐT" }}
+              </div>
+              <div class="recipient-email" *ngIf="address.email">
+                {{ address.email }}
+              </div>
+              <div class="address-detail">
+                {{
+                  formatAddressFromParts(
+                    address.address || address.detail || "",
+                    address.ward || "",
+                    address.district || "",
+                    address.province || address.city || ""
+                  )
+                }}
+              </div>
+              <span *ngIf="address.isDefault" class="default-badge"
+                >Mặc định</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
